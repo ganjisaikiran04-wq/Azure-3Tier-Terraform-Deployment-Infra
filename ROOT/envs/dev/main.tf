@@ -17,16 +17,16 @@ provider "azurerm" {
 }
 
 locals {
-  vmss_size = "Standard_DS1_v2"
+  vmss_size = "Standard_L4aos_v4"
 }
 
 # ─────────────────────────────────────────────────────
-# NETWORKING  (AWS VPC + Security Groups)
+# NETWORKING  (Resource Group, VNet, Subnets, NSGs, NAT Gateway)
 # ─────────────────────────────────────────────────────
 module "network" {
   source = "../../modules/infrastructure"
 
-  azure_location      = "eastus"
+  azure_location      = "Central US"
   project_name        = "three-tier"
   resource_group_name = var.resource_group_name
   vnet_name           = "prod-vnet"
@@ -54,7 +54,7 @@ module "bastion" {
   azure_location      = module.network.resource_group_location
   resource_group_name = module.network.resource_group_name
   project_name        = "three-tier"
-  vm_size             = "Standard_B1s"
+  vm_size             = "Standard_L4aos_v4"
   subnet_id           = module.network.public_subnets[0]
   nsg_id              = module.network.bastion_nsg_id
   admin_username      = "azureuser"
@@ -70,7 +70,7 @@ module "frontend_vm" {
   azure_location      = module.network.resource_group_location
   resource_group_name = module.network.resource_group_name
   project_name        = "three-tier"
-  vm_size             = "Standard_B1s"
+  vm_size             = "Standard_L4aos_v4"
   subnet_id           = module.network.public_subnets[0]
   nsg_id              = module.network.frontend_server_nsg_id
   admin_username      = "azureuser"
@@ -86,7 +86,7 @@ module "backend_vm" {
   azure_location      = module.network.resource_group_location
   resource_group_name = module.network.resource_group_name
   project_name        = "three-tier"
-  vm_size             = "Standard_B1s"
+  vm_size             = "Standard_L4aos_v4"
   subnet_id           = module.network.public_subnets[0]
   nsg_id              = module.network.backend_server_nsg_id
   admin_username      = "azureuser"
